@@ -65,4 +65,8 @@ async def kick(ctx, member:discord.Member, *, reason=None):
 async  def ban(ctx, member:discord.Member, *, reason=None):
     await member.ban(reason=reason)
 
+@client.command()
+async def unban(ctx, *, member:discord.Member):
+    banned_users = await ctx.guild.bans()
+
 client.run(token)
