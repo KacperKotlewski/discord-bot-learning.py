@@ -51,4 +51,18 @@ async  def _8ball(ctx, *, question):
                 "Very doubtful."]
     await ctx.send(f"Question: {question}\nAnswer: {random.choice(response)}")
 
+@client.command()
+async def clean(ctx, amount=5):
+    await ctx.channel.purge(limit=amount)
+
+@client.command()
+async def kick(ctx, member:discord.Member, *, reason=None):
+    await ctx.send(f"sorry dude @{member} you been randomly picked to been kicked")
+    await member.kick(reason=reason)
+    await  ctx.send(f"{member} has drop out")
+
+@client.command()
+async  def ban(ctx, member:discord.Member, *, reason=None)
+    await member.ban(reason=reason)
+
 client.run(token)
