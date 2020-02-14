@@ -59,14 +59,22 @@ async def clean(ctx, amount=5):
 async def kick(ctx, member:discord.Member, *, reason=None):
     await ctx.send(f"sorry dude @{member} you been randomly picked to been kicked")
     await member.kick(reason=reason)
-    await  ctx.send(f"{member} has drop out")
+    await  ctx.send(f"{member.mention} has drop out")
 
 @client.command()
 async  def ban(ctx, member:discord.Member, *, reason=None):
     await member.ban(reason=reason)
 
 @client.command()
-async def unban(ctx, *, member:discord.Member):
+async def unban(ctx, *, member):
     banned_users = await ctx.guild.bans()
+    member_name, member_discriminatior = member.split('#')
+
+    for ban_entity in banned_users:
+        user = ban_entity.user
+
+        if(user.name, user.discriminator) == (member_name, member_discriminatior):
+            await ctx.guild.unban(user)
+            await ctx.send(f"{user.mention} has been unbaned")
 
 client.run(token)
