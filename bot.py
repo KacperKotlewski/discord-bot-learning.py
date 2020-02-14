@@ -13,6 +13,8 @@ client = commands.Bot(command_prefix="//")
 @client.event
 async def on_ready():
     print('hello i\'m alive')
+    #game = discord.Game("with the API")
+    #client.change_presence(status=discord.Status.idle, activity=game)
 
 @client.event
 async def on_member_join(member):
@@ -52,7 +54,7 @@ async  def _8ball(ctx, *, question):
     await ctx.send(f"Question: {question}\nAnswer: {random.choice(response)}")
 
 @client.command()
-async def clean(ctx, amount=5):
+async def clean(ctx, amount=2):
     await ctx.channel.purge(limit=amount)
 
 @client.command()
@@ -76,5 +78,15 @@ async def unban(ctx, *, member):
         if(user.name, user.discriminator) == (member_name, member_discriminatior):
             await ctx.guild.unban(user)
             await ctx.send(f"{user.mention} has been unbaned")
+
+@client.command(aliases=["reset", "restart", "reboot"])
+async  def reset(ctx):
+    await ctx.send("wait i need few sec to think about this")
+    await client.close()
+    import os
+    os.system("cls")
+    os.system("echo bot restarting")
+    os.system("python bot.py "+str(token))
+
 
 client.run(token)
