@@ -40,12 +40,14 @@ async def show(ctx, what = ""):
     \t{config.DISCORD_BOT_PREFIX}show help
 ```
 """)
-    if(what == "extensions"):
+    elif(what == "extensions"):
         extensions = ""
         for file in os.listdir("./cogs"):
             if file.endswith(".py"):
                 extensions += str(f"{file[:-3]}\n")
         await ctx.send(f"```\nextensions:\n{extensions}```")
+    else:
+        await ctx.send(f"We don't understand each other :/ try use: {config.DISCORD_BOT_PREFIX}show help")
 
 
 for file in os.listdir("./cogs"):
