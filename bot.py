@@ -91,27 +91,9 @@ async  def _reset(ctx):
     os.system("python bot.py "+str(token))
 
 
-@client.command()
-async def join(ctx):
-    channel = ctx.author.voice.channel
-    await channel.connect()
-
-@client.command()
-async def leave(ctx:commands.context.Context):
-    for con in client.voice_clients:
-        if con.channel.id == ctx.author.voice.channel.id:
-            await con.disconnect(force=False)
 
 @client.command()
 async def play(ctx:commands.Context, url):
-    print(ctx)
-    print(ctx.voice_client)
-    print(ctx.author)
-    print(ctx.channel)
-    print(ctx.bot)
-    print(ctx.me)
-    print(client)
-    client.voice_clients.append(ctx.author)
-    print(client.voice_clients)
+    pass
 
 client.run(token)
