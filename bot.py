@@ -2,14 +2,14 @@ import sys
 import discord
 import os
 from discord.ext import commands
+import config
 
 if len(sys.argv)>1:
     token = sys.argv[1]
 else:
-    import config
     token = config.DISCORD_BOT_TOKEN
 
-client = commands.Bot(command_prefix="//")
+client = commands.Bot(command_prefix=config.DISCORD_BOT_PREFIX)
 
 @client.command()
 async def load(ctx, extension):
@@ -28,13 +28,24 @@ async def unload(ctx, extension):
         await ctx.send(f"Extension {extension}.py not loaded")
 
 @client.command()
-async def show(ctx, what):
+async def show(ctx, what = ""):
+    if(what == "help" or what == "?" or what == ""):
+        await ctx.send(f"""
+```\nsyntax:
+    \t{config.DISCORD_BOT_PREFIX}show <value>
+    \nvalues:
+    \thelp -> describe a command
+    \textension -> to show extensions
+    \nexample:
+    \t{config.DISCORD_BOT_PREFIX}show help
+```
+""")
     if(what == "extensions"):
         extensions = ""
         for file in os.listdir("./cogs"):
             if file.endswith(".py"):
                 extensions += str(f"{file[:-3]}\n")
-        await ctx.send("```\nextensions:\n"+extensions+"```")
+        await ctx.send(f"```\nextensions:\n{extensions}```")
 
 
 for file in os.listdir("./cogs"):
