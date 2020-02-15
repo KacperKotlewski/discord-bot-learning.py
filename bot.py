@@ -1,5 +1,6 @@
 import sys
 import discord
+import os
 from discord.ext import commands
 
 if len(sys.argv)>1:
@@ -10,11 +11,36 @@ else:
 
 client = commands.Bot(command_prefix="//")
 
-@client.event
-async def on_ready():
-    print('hello i\'m alive')
-    #game = discord.Game("with the API")
-    #client.change_presence(status=discord.Status.idle, activity=game)
+@client.command()
+async def load(ctx, extension):
+    try:
+        client.load_extension(f"cogs.{extension}")
+        await ctx.send(f"Loaded {extension}")
+    except discord.ext.commands.errors.ExtensionNotFound:
+        await ctx.send(f"Extension {extension}.py don't exist")
+
+@client.command()
+async def unload(ctx, extension):
+    try:
+        client.unload_extension(f"cogs.{extension}")
+        await ctx.send(f"Unloaded {extension}")
+    except discord.ext.commands.errors.ExtensionNotLoaded:
+        await ctx.send(f"Extension {extension}.py not loaded")
+
+@client.command()
+async def show(ctx, what):
+    if(what == "extensions"):
+        extensions = ""
+        for file in os.listdir("./cogs"):
+            if file.endswith(".py"):
+                extensions += str(f"{file[:-3]}\n")
+        await ctx.send("```\nextensions:\n"+extensions+"```")
+
+
+for file in os.listdir("./cogs"):
+    if file.endswith(".py"):
+        client.load_extension(f"cogs.{file[:-3]}")
+
 
 @client.event
 async def on_member_join(member):
@@ -23,10 +49,6 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     print(f"{member} has left the server")
-
-@client.command()
-async def ping(ctx): #ctx context
-    await ctx.send(f"Pong! {round(client.latency*1000)}ms")
 
 import random
 @client.command(aliases=["8ball"])
@@ -79,8 +101,8 @@ async def unban(ctx, *, member):
             await ctx.guild.unban(user)
             await ctx.send(f"{user.mention} has been unbaned")
 
-@client.command(aliases=["reset", "restart", "reboot"])
-async  def reset(ctx):
+@client.command(aliases=["reset","restart", "reboot"])
+async  def _reset(ctx):
     await ctx.send("wait i need few sec to think about this")
     await client.close()
     import os
