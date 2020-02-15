@@ -13,5 +13,13 @@ class Example(commands.Cog):
     async def ping(self, ctx):  # ctx context
         await ctx.send(f"Pong! {round(self.client.latency * 1000)}ms")
 
+    @commands.Cog.listener()
+    async def on_member_join(member):
+        print(f"{member} has join to server")
+
+    @commands.Cog.listener()
+    async def on_member_remove(member):
+        print(f"{member} has left the server")
+
 def setup(client):
     client.add_cog(Example(client))
