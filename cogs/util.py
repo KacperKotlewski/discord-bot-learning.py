@@ -8,6 +8,7 @@ class Utilities(commands.Cog):
     @commands.command()
     async def clean(self, ctx, amount=2):
         await ctx.channel.purge(limit=amount)
+        print(type(ctx))
 
     @commands.command()
     async def kick(self, ctx, member: discord.Member, *, reason=None):

@@ -1,7 +1,8 @@
 import sys
 import discord
 import os
-from discord.ext import commands
+from discord.ext import commands, tasks
+from itertools import cycle
 import config
 
 if len(sys.argv)>1:
@@ -10,6 +11,26 @@ else:
     token = config.DISCORD_BOT_TOKEN
 
 client = commands.Bot(command_prefix=config.DISCORD_BOT_PREFIX)
+
+@client.event
+async def on_ready():
+    pinging.start()
+
+status = cycle(["Feedbacking questions", "Doing stuff", "Getting rage"])
+@tasks.loop(seconds=10)
+async def pinging():
+    import random
+    await client.change_presence(
+        status=discord.Status.online,
+        activity=discord.Game(status)
+    )
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("Please pass all required arguments")
+    elif isinstance(error, commands.CommandNotFound):
+        await ctx.send("Command don't exist")
 
 @client.command()
 async def load(ctx, extension):
@@ -26,6 +47,12 @@ async def unload(ctx, extension):
         await ctx.send(f"Unloaded {extension}")
     except discord.ext.commands.errors.ExtensionNotLoaded:
         await ctx.send(f"Extension {extension}.py not loaded")
+
+@load.error
+@unload.error
+async def load_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("You need to specify extension")
 
 @client.command()
 async def show(ctx, what = ""):
