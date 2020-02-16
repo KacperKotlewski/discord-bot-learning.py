@@ -48,8 +48,20 @@ async def unload(ctx, extension):
     except discord.ext.commands.errors.ExtensionNotLoaded:
         await ctx.send(f"Extension {extension}.py not loaded")
 
+@client.command()
+async def reload(ctx, extension):
+    try:
+        client.unload_extension(f"cogs.{extension}")
+        client.load_extension(f"cogs.{extension}")
+        await ctx.send(f"Reloaded {extension}")
+    except discord.ext.commands.errors.ExtensionNotLoaded:
+        await ctx.send(f"Extension {extension}.py not loaded")
+    except discord.ext.commands.errors.ExtensionNotFound:
+        await ctx.send(f"Extension {extension}.py don't exist")
+
 @load.error
 @unload.error
+@reload.error
 async def load_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send("You need to specify extension")
@@ -89,11 +101,5 @@ async  def _reset(ctx):
     os.system("cls")
     os.system("echo bot restarting")
     os.system("python bot.py "+str(token))
-
-
-
-@client.command()
-async def play(ctx:commands.Context, url):
-    pass
 
 client.run(token)
